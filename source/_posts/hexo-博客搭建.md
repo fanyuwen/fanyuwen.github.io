@@ -1,7 +1,7 @@
 ---
 title: hexo 博客搭建
 date: 2021-02-24 23:00:18
-tags:
+tags: hexo
 ---
 
 1. 先安装node(包括npm),确保已安装执行node -v和npm -v命令
