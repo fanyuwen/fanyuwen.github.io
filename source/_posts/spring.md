@@ -13,3 +13,5 @@ tags: java spring
    BeanFactoryPostProcessor  
    InitialingBean  
    DisposableBean
+   
+2. **Spring 单元测试**
