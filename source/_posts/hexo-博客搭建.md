@@ -5,7 +5,7 @@ tags: hexo
 ---
 
 1. 先安装node(包括npm),确保已安装执行node -v和npm -v命令
-2. 运行npm install hexo命令安装hexo
+2. 运行npm install hexo -g(全局安装,保证hexo命令可以运行)命令安装hexo
 3. 新建自己的博客目录,在该目录下运行hexo init命令
 4. 初始化好了之后运行hexo s命令并打开浏览器访问localhost:4000,查看默认生成的博客
 5. 去自己的github上新增一个仓库,仓库名必须是 用户名.github.io
