@@ -116,7 +116,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/05/12/hello-world/" data-id="ckomu9oa80001m0w34cq89ws2" data-title="Hello World" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/05/12/hello-world/" data-id="ckomue5sw0003gow3eej9b6tf" data-title="Hello World" class="article-share-link">Share</a>
       
       
       
@@ -154,7 +154,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckomu9oae000am0w3ej9a50r5" data-title="mybatis" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckomue5sx0005gow3bmmtd53j" data-title="mybatis" class="article-share-link">Share</a>
       
       
       
@@ -194,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/22/database/" data-id="ckomu9oa50000m0w3c9d63cbt" data-title="database" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/22/database/" data-id="ckomue5sp0000gow33qopcrqv" data-title="database" class="article-share-link">Share</a>
       
       
       
@@ -242,7 +242,7 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\://www.springframework.org/schema/tx=org.springframework.transaction.config.TxNamespaceHandler</span><br></pre></td></tr></table></figure>
 
 <p>关键就在于上面handlers文件里的内容,Spring会用指定的TxNamespaceHandler类来处理xml里的定义<br>TxNamespaceHandler</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TxNamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String TRANSACTION_MANAGER_ATTRIBUTE = <span class="string">&quot;transaction-manager&quot;</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = <span class="string">&quot;transactionManager&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> String <span class="title">getTransactionManagerName</span><span class="params">(Element element)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE) ?</span><br><span class="line">				element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE) : DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;advice&quot;</span>, <span class="keyword">new</span> TxAdviceBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;annotation-driven&quot;</span>, <span class="keyword">new</span> AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;jta-transaction-manager&quot;</span>, <span class="keyword">new</span> JtaTransactionManagerBeanDefinitionParser());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TxNamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String TRANSACTION_MANAGER_ATTRIBUTE = <span class="string">&quot;transaction-manager&quot;</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = <span class="string">&quot;transactionManager&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> String <span class="title">getTransactionManagerName</span><span class="params">(Element element)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE)?element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE):DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;advice&quot;</span>, <span class="keyword">new</span> TxAdviceBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;annotation-driven&quot;</span>, <span class="keyword">new</span> AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;jta-transaction-manager&quot;</span>, <span class="keyword">new</span> JtaTransactionManagerBeanDefinitionParser());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象</p>
 <p>advice标签顾名思义就是利用aop的方式来定义具体的切面逻辑<br>annotation-driven标签则确定了注解驱动的逻辑<br>jta-transaction-manager标签还没研究</p>
@@ -252,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/20/spring/" data-id="ckomu9oae000bm0w3b7q9ame2" data-title="spring" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/20/spring/" data-id="ckomue5sy0008gow36dpx91w8" data-title="spring" class="article-share-link">Share</a>
       
       
       
@@ -402,7 +402,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/20/lock/" data-id="ckomu9oab0004m0w37uil765m" data-title="lock" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/20/lock/" data-id="ckomue5sw0004gow36n9w9ps4" data-title="lock" class="article-share-link">Share</a>
       
       
       
@@ -457,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckomu9oaa0003m0w307fq5xze" data-title="hexo 博客搭建" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckomue5st0001gow30w626pjz" data-title="hexo 博客搭建" class="article-share-link">Share</a>
       
       
       
