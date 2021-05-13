@@ -42,8 +42,27 @@ tags: java spring
    http\://www.springframework.org/schema/tx=org.springframework.transaction.config.TxNamespaceHandler
    ```
    
+   这里举个小例子,spring xml文件配置的根标签是beans,然后它的xmlns链接的就是上面的spring.schemas定义的,可以看到xmlns:tx链接的就是"http://www.springframework.org/schema/tx" 然后还有具体的schemaLocation具体的引用
+   
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:tx="http://www.springframework.org/schema/tx"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx.xsd">
+       <tx:advice>
+       </tx:advice>
+       <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+       <tx:jta-transaction-manager>
+       </tx:jta-transaction-manager>
+   </beans>
+   ```
+   
    关键就在于上面handlers文件里的内容,Spring会用指定的TxNamespaceHandler类来处理xml里的定义
-   TxNamespaceHandler
+   TxNamespaceHandler,具体的类定义在下方
    
    ```java
    public class TxNamespaceHandler extends NamespaceHandlerSupport {
@@ -61,7 +80,7 @@ tags: java spring
    }
    ```
    
-   关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象
+   关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象,通过看上面的xml文件定义里beans根标签下面定义的三个以tx为前缀的三个标签,在这个init方法里都有与之对应的解析对象
    
    advice标签顾名思义就是利用aop的方式来定义具体的切面逻辑
    annotation-driven标签则确定了注解驱动的逻辑
