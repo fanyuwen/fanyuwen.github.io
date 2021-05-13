@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>lock | talk is cheap,show me the code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="java锁java对象内存布局java对象在内存种存储的布局可以分为3块区域: 对象头 实例数据 对齐填充  对象头: 主要包括两部分1. Mark Word(标记字段), 2. Klass Pointer(类型指针). Klass Point是对象指向它的类元数据的指针,虚拟机通过这个指针来确定这个对象是哪个类的实例(即指向方法区类的模板信息). Mark Word用于存储对象自身的运行时数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lock">
+<meta property="og:url" content="https://fanyuwen.github.io/2021/04/20/lock/index.html">
+<meta property="og:site_name" content="talk is cheap,show me the code">
+<meta property="og:description" content="java锁java对象内存布局java对象在内存种存储的布局可以分为3块区域: 对象头 实例数据 对齐填充  对象头: 主要包括两部分1. Mark Word(标记字段), 2. Klass Pointer(类型指针). Klass Point是对象指向它的类元数据的指针,虚拟机通过这个指针来确定这个对象是哪个类的实例(即指向方法区类的模板信息). Mark Word用于存储对象自身的运行时数据">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-20T15:33:50.000Z">
+<meta property="article:modified_time" content="2021-05-12T04:09:36.001Z">
+<meta property="article:author" content="樊宇雯">
+<meta property="article:tag" content="java lock">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="talk is cheap,show me the code" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">talk is cheap,show me the code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">just enjoy it</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fanyuwen.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-lock" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/20/lock/" class="article-date">
+  <time class="dt-published" datetime="2021-04-20T15:33:50.000Z" itemprop="datePublished">2021-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      lock
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="java锁"><a href="#java锁" class="headerlink" title="java锁"></a>java锁</h3><p>java对象内存布局<br>java对象在内存种存储的布局可以分为3块区域: <strong>对象头</strong> <strong>实例数据</strong> <strong>对齐填充</strong></p>
+<ul>
+<li><em>对象头</em>: 主要包括两部分1. Mark Word(标记字段), 2. Klass Pointer(类型指针). Klass Point是对象指向它的类元数据的指针,虚拟机通过这个指针来确定这个对象是哪个类的实例(即指向方法区类的模板信息). Mark Word用于存储对象自身的运行时数据</li>
+<li><em>实例变量</em>: 存放类的属性数据信息,包括父类的属性信息,这部分内存按4字节对齐(64位 8字节)</li>
+<li>填充数据: 由于虚拟机要求对象起始地址必须是8字节的整数倍. 填充数据不是必须存在的,仅仅是为了字节对齐</li>
+</ul>
+<p>下面是32位虚拟机的 mark word布局</p>
+<table>
+    <tr>
+        <td rowspan="2" align="center" valign="middle">锁状态</td>
+        <td colspan="2" align="center" valign="middle">25bit</td>
+        <td rowspan="2" align="center" valign="middle">4bit</td>
+        <td align="center" valign="middle">1bit</td>
+        <td align="center" valign="middle">2bit</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">23bit</td>
+        <td align="center" valign="middle">2bit</td>
+        <td align="center" valign="middle">是否偏向锁</td>
+        <td align="center" valign="middle">锁标志位</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">无锁</td>
+        <td colspan="2" align="center" valign="middle">对象hashCode</td>
+        <td align="center" valign="middle">分代年龄</td>
+        <td align="center" valign="middle">0</td>
+        <td align="center" valign="middle">01</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">轻量级锁</td>
+        <td colspan="4" align="center" valign="middle">指向栈中锁记录的指针</td>
+        <td align="center" valign="middle">00</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">重量级锁</td>
+        <td colspan="4" align="center" valign="middle">指向互斥量(重量级锁)的指针</td>
+        <td align="center" valign="middle">10</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">GC标记</td>
+        <td colspan="4" align="center" valign="middle">空</td>
+        <td align="center" valign="middle">11</td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">偏向锁</td>
+        <td align="center" valign="middle">线程ID</td>
+        <td align="center" valign="middle">Epoch</td>
+        <td align="center" valign="middle">分代年龄</td>
+        <td align="center" valign="middle">1</td>
+        <td align="center" valign="middle">01</td>
+    </tr>
+</table>
+轻量级锁和偏向锁是Java 6对synchronized锁进行优化后新增加,重量级锁也就是通常说synchronized的对象锁,
+锁标识位为10,其中指针指向的是monitor对象(_也称为管程或监视器锁_)的起始地址.每个对象都存在着一个**monitor**与之关联
+在Java虚拟机(HotSpot)中,monitor是由**ObjectMonitor**实现的,其主要数据结构如下(位于HotSpot虚拟机源码ObjectMonitor.hpp文件,C++实现),
+省略部分属性
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">class <span class="title">ObjectMonitor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    _count = <span class="number">0</span>;<span class="comment">//记录数</span></span><br><span class="line">    _recursions = <span class="number">0</span>;<span class="comment">//锁的重入次数</span></span><br><span class="line">    _owner = <span class="literal">NULL</span>;<span class="comment">//指向持有ObjectMonitor对象的线程</span></span><br><span class="line">    _WaitSet = <span class="literal">NULL</span>;<span class="comment">//调用wait后,线程会被加入到_WaitSet</span></span><br><span class="line">    _EntryList = <span class="literal">NULL</span>; <span class="comment">//等待获取锁的线程,会被加入到该列表</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>新建(New),新建后尚未启动的线程</li>
+<li>运行(Runable),Runnable包括了操作系统线程状态中的Running和Ready</li>
+<li>无限期等待(Waiting),不会被分配CPU执行时间,要等待被其他线程显式的唤醒.例如调用没有设置Timeout参数的Object.wait()方法</li>
+<li>限期等待(Timed Waiting),不会被分配CPU执行时间,不过无需等待其他线程显示的唤醒,在一定时间之后会由系统自动唤醒.例如调用Thread.sleep()方法</li>
+<li>阻塞(Blocked),线程被阻塞了,”阻塞状态”与”等待状态”的区别是:”阻塞状态”在等待获取着一个排他锁,这个事件将在另外一个线程放弃这个锁的时候发生,而”等待状态”则是在等待一段时间,或者唤醒动作的发生.在程序等待进入同步区域的时候,线程将进入这种状态</li>
+<li>结束(Terminated):线程结束执行</li>
+</ul>
+<p>对于一个synchronized修饰的方法(代码块)来说:</p>
+<ol>
+<li>当多个线程同时访问该方法,那么这些线程会先被放进_EntryList队列,此时线程处于blocked状态</li>
+<li>当一个线程获取到了对象的monitor后,那么就可以进入running状态,执行方法,此时,ObjectMonitor对象的_owner指向当前线程,_count加1表示当前对象锁被一个线程获取</li>
+<li>当running状态的线程调用wait()方法,那么当前线程释放monitor对象,进入waiting状态,ObjectMonitor对象的_owner变为null,_count减1,同时线程进入_WaitSet队列,直到有线程调用notify()方法唤醒该线程,则该线程进入_EntryList队列,竞争到锁再进入_Owner区</li>
+<li>如果当前线程执行完毕,那么也释放monitor对象,ObjectMonitor对象的_owner变为null,_count减1</li>
+</ol>
+<p>由此看来,monitor对象存在于每个Java对象的对象头中(存储的是指针),synchronized锁便是通过这种方式获取锁的,也是为什么Java中任意对象可以作为锁的原因,同时也是notify/notifyAll/wait等方法存在于顶级对象Object中的原因</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">monitorenter</span><br><span class="line">monitorexit</span><br><span class="line">ACC_SYNCHRONIZED</span><br></pre></td></tr></table></figure>
+
+<p>synchronized代码块是通过monitorenter和monitorexit两个指令实现的<br>synchronized方法是通过添加ACC_SYNCHRONIZED标识实现的</p>
+<p>synchronized锁有四种状态,无锁,偏向锁,轻量级锁,重量级锁,这几个状态会随着竞争状态逐渐升级,<br>锁可以升级但不能降级,但是偏向锁状态可以被重置为无锁状态偏向锁(通过设置Mark Word倒数第三位的标志为0)</p>
+<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>因为经过HotSpot的作者大量的研究发现,大多数时候是不存在锁竞争的,常常是一个线程多次获得同一个锁,因此如果每次都要竞争锁会增大很多没有必要付出的代价,为了降低获取锁的代价,才引入的偏向锁.<br><strong>升级过程</strong>: 当线程1访问代码块并获取锁对象时,会在java对象头和栈帧中记录偏向的锁的threadID,因为偏向锁不会主动释放锁,因此以后线程1再次获取锁的时候,需要比较当前线程的threadID和Java对象头中的threadID是否一致,如果一致(还是线程1获取锁对象),则无需使用CAS来加锁、解锁;如果不一致(其他线程,如线程2要竞争锁对象,而偏向锁不会主动释放因此还是存储的线程1的threadID),那么需要查看Java对象头中记录的线程1是否存活,如果没有存活,那么锁对象被重置为无锁状态,其它线程(线程2)可以竞争将其设置为偏向锁;如果存活,那么立刻查找该线程(线程1)的栈帧信息,如果还是需要继续持有这个锁对象,那么暂停当前线程1,撤销偏向锁,升级为轻量级锁,如果线程1 不再使用该锁对象,那么将锁对象状态设为无锁状态,重新偏向新的线程.</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁考虑的是竞争锁对象的线程不多,而且线程持有锁的时间也不长的情景.因为阻塞线程需要CPU从用户态转到内核态,代价较大,如果刚刚阻塞不久这个锁就被释放了,那这个代价就有点得不偿失了,因此这个时候就干脆不阻塞这个线程,让它自旋这等待锁释放.<br><strong>升级过程</strong>: 线程1获取轻量级锁时会先把锁对象的对象头MarkWord复制一份到线程1的栈帧中创建的用于存储锁记录的空间(称为DisplacedMarkWord),然后使用CAS把对象头中的内容替换为线程1存储的锁记录(DisplacedMarkWord)的地址;<br>如果在线程1复制对象头的同时(在线程1CAS之前),线程2也准备获取锁,复制了对象头到线程2的锁记录空间中,但是在线程2CAS的时候,发现线程1已经把对象头换了,线程2的CAS失败,那么线程2就尝试使用自旋锁来等待线程1释放锁. 自旋锁简单来说就是让线程2在循环中不断CAS<br>但是如果自旋的时间太长也不行,因为自旋是要消耗CPU的,因此自旋的次数是有限制的,比如10次或者100次,如果自旋次数到了线程1还没有释放锁,或者线程1还在执行,线程2还在自旋等待,这时又有一个线程3过来竞争这个锁对象,那么这个时候轻量级锁就会膨胀为重量级锁.重量级锁把除了拥有锁的线程都阻塞,防止CPU空转.</p>
+<table>
+<thead>
+<tr>
+<th>锁状态</th>
+<th>优点</th>
+<th>缺点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>偏向锁</td>
+<td>加锁解锁无需额外的消耗,和非同步方法时间相差纳秒级别</td>
+<td>如果竞争的线程多,那么会带来额外的锁撤销的消耗</td>
+<td>基本没有线程竞争锁的同步场景</td>
+</tr>
+<tr>
+<td>偏向锁</td>
+<td>竞争的线程不会阻塞,使用自旋,提高程序响应速度</td>
+<td>如果一直不能获取锁,长时间的自旋会造成CPU白白消耗</td>
+<td>适用于少量线程竞争锁对象,且线程持有锁的时间不长,追求响应速度的场景</td>
+</tr>
+<tr>
+<td>偏向锁</td>
+<td>线程竞争不适用CPU自旋,不会导致CPU空转消耗CPU资源</td>
+<td>线程阻塞,响应时间长</td>
+<td>很多线程竞争锁,且锁持有的时间长,追求吞吐量的场景</td>
+</tr>
+</tbody></table>
+<h3 id="用锁的注意项"><a href="#用锁的注意项" class="headerlink" title="用锁的注意项"></a>用锁的注意项</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//每次调用创建不同的锁,等于无锁</span></span><br><span class="line"><span class="keyword">synchronized</span> (<span class="keyword">new</span> Object())&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//String、Boolean、包装类都采用了享元模式,即值在一定范围内,对象都是同一个.所以看似用了不同的对象,但其实用的是同一个对象,</span></span><br><span class="line"><span class="comment">//会导致一个锁被多个地方使用</span></span><br><span class="line"><span class="keyword">private</span> Integer count;</span><br><span class="line"><span class="keyword">synchronized</span>(count)&#123;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//常规对象锁</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Object lock = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="comment">//静态对象锁</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object lock = <span class="keyword">new</span> Object();</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fanyuwen.github.io/2021/04/20/lock/" data-id="ckomu9oab0004m0w37uil765m" data-title="lock" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-lock/" rel="tag">java lock</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/04/20/spring/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          spring
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">hexo 博客搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-lock/" rel="tag">java lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mybatis/" rel="tag">java mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-spring/" rel="tag">java spring</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/database/" style="font-size: 10px;">database</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-lock/" style="font-size: 10px;">java lock</a> <a href="/tags/java-mybatis/" style="font-size: 10px;">java mybatis</a> <a href="/tags/java-spring/" style="font-size: 10px;">java spring</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/05/12/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/mybatis/">mybatis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/database/">database</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/spring/">spring</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/lock/">lock</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 樊宇雯<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

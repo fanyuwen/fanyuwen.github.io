@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>hexo 博客搭建 | talk is cheap,show me the code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="先安装node(包括npm),确保已安装执行node -v和npm -v命令 运行npm install hexo -g(全局安装,保证hexo命令可以运行)命令安装hexo 新建自己的博客目录,在该目录下运行hexo init命令 初始化好了之后运行hexo s命令并打开浏览器访问localhost:4000,查看默认生成的博客 去自己的github上新增一个仓库,仓库名必须是 用户名.git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo 博客搭建">
+<meta property="og:url" content="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="talk is cheap,show me the code">
+<meta property="og:description" content="先安装node(包括npm),确保已安装执行node -v和npm -v命令 运行npm install hexo -g(全局安装,保证hexo命令可以运行)命令安装hexo 新建自己的博客目录,在该目录下运行hexo init命令 初始化好了之后运行hexo s命令并打开浏览器访问localhost:4000,查看默认生成的博客 去自己的github上新增一个仓库,仓库名必须是 用户名.git">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-02-24T15:00:18.000Z">
+<meta property="article:modified_time" content="2021-05-13T11:58:46.517Z">
+<meta property="article:author" content="樊宇雯">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="talk is cheap,show me the code" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">talk is cheap,show me the code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">just enjoy it</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fanyuwen.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-hexo-博客搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time class="dt-published" datetime="2021-02-24T15:00:18.000Z" itemprop="datePublished">2021-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      hexo 博客搭建
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>先安装node(包括npm),确保已安装执行node -v和npm -v命令</li>
+<li>运行npm install hexo -g(全局安装,保证hexo命令可以运行)命令安装hexo</li>
+<li>新建自己的博客目录,在该目录下运行hexo init命令</li>
+<li>初始化好了之后运行hexo s命令并打开浏览器访问localhost:4000,查看默认生成的博客</li>
+<li>去自己的github上新增一个仓库,仓库名必须是 用户名.github.io</li>
+<li></li>
+<li>需要用npm下载hexo-deployer-git npm install –save hexo-deployer-git</li>
+<li>去自己的博客目录下打开_config.yml文件,去最下面的deply配置</li>
+<li>修改并添加如下<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">仓库地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">分支名</span></span><br></pre></td></tr></table></figure></li>
+<li>可以运行hexo d将生成的文件推送到远程git仓库,可以请求 用户名.github.io 看已经生成的博客</li>
+<li>可以使用hexo new [(可选)post] “标题名” 创建一个新标题</li>
+<li>编辑完标题之后,运行hexo clean(清理) 然后再运行hexo g(生成) 也可以试着运行hexo s 本地查看是否正确</li>
+<li>正确无误运行hexo d推送到远程仓库,查看最新的博客</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckomu9oaa0003m0w307fq5xze" data-title="hexo 博客搭建" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/04/20/lock/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          lock
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-lock/" rel="tag">java lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mybatis/" rel="tag">java mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-spring/" rel="tag">java spring</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/database/" style="font-size: 10px;">database</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-lock/" style="font-size: 10px;">java lock</a> <a href="/tags/java-mybatis/" style="font-size: 10px;">java mybatis</a> <a href="/tags/java-spring/" style="font-size: 10px;">java spring</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/05/12/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/mybatis/">mybatis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/database/">database</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/spring/">spring</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/lock/">lock</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 樊宇雯<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

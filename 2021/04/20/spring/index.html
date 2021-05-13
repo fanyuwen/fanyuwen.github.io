@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>spring | talk is cheap,show me the code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="spring扩展点FactroyBeanBeanPostProcessInstantiationAwareBeanPostProcessorBeanNameAwareApplicationContextAwareBeanFactoryAwareBeanFactoryPostProcessorInitialingBeanDisposableBean  Spring 单元测试  spring 事务管">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring">
+<meta property="og:url" content="https://fanyuwen.github.io/2021/04/20/spring/index.html">
+<meta property="og:site_name" content="talk is cheap,show me the code">
+<meta property="og:description" content="spring扩展点FactroyBeanBeanPostProcessInstantiationAwareBeanPostProcessorBeanNameAwareApplicationContextAwareBeanFactoryAwareBeanFactoryPostProcessorInitialingBeanDisposableBean  Spring 单元测试  spring 事务管">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-20T15:36:29.000Z">
+<meta property="article:modified_time" content="2021-05-13T11:47:25.798Z">
+<meta property="article:author" content="樊宇雯">
+<meta property="article:tag" content="java spring">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="talk is cheap,show me the code" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">talk is cheap,show me the code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">just enjoy it</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fanyuwen.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/20/spring/" class="article-date">
+  <time class="dt-published" datetime="2021-04-20T15:36:29.000Z" itemprop="datePublished">2021-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      spring
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p><strong>spring扩展点</strong><br>FactroyBean<br>BeanPostProcess<br>InstantiationAwareBeanPostProcessor<br>BeanNameAware<br>ApplicationContextAware<br>BeanFactoryAware<br>BeanFactoryPostProcessor<br>InitialingBean<br>DisposableBean</p>
+</li>
+<li><p><strong>Spring 单元测试</strong></p>
+</li>
+<li><p><strong>spring 事务管理</strong><br>一般声明Spring的事务管理方式就是通过xml文件声明aop配置,但是后面越来越多的通过声明式的方式也就是<br>通过注解的方式(<code>@org.springframework.transaction.annotation.Transactional</code>)<br>接下来通过分析源码的方式解析Spring事务管理的处理流程<br>首先Spring解析xml会有一个命名空间的机制,通过在jar包的META-INF下面添加spring.handlers、<br>spring.schemas和可选的spring.tooling文件内容<br>这里需要说明一下<em>Spring</em>事务管理是单独放在<em>spring-tx</em>包依赖里的,所以它的<em>META-INF</em>文件夹下面有相应的文件<br>spring.schemas文件内容</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http\://www.springframework.org/schema/tx/spring-tx-2.0.xsd=org/springframework/transaction/config/spring-tx-2.0.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-2.5.xsd=org/springframework/transaction/config/spring-tx-2.5.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-3.0.xsd=org/springframework/transaction/config/spring-tx-3.0.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-3.1.xsd=org/springframework/transaction/config/spring-tx-3.1.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-3.2.xsd=org/springframework/transaction/config/spring-tx-3.2.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-4.0.xsd=org/springframework/transaction/config/spring-tx-4.0.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx-4.1.xsd=org/springframework/transaction/config/spring-tx-4.1.xsd</span><br><span class="line">http\://www.springframework.org/schema/tx/spring-tx.xsd=org/springframework/transaction/config/spring-tx-4.1.xsd</span><br></pre></td></tr></table></figure>
+
+<p>spring.handlders文件内容</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\://www.springframework.org/schema/tx=org.springframework.transaction.config.TxNamespaceHandler</span><br></pre></td></tr></table></figure>
+
+<p>关键就在于上面handlers文件里的内容,Spring会用指定的TxNamespaceHandler类来处理xml里的定义<br>TxNamespaceHandler</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TxNamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String TRANSACTION_MANAGER_ATTRIBUTE = <span class="string">&quot;transaction-manager&quot;</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = <span class="string">&quot;transactionManager&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> String <span class="title">getTransactionManagerName</span><span class="params">(Element element)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE) ?</span><br><span class="line">				element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE) : DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;advice&quot;</span>, <span class="keyword">new</span> TxAdviceBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;annotation-driven&quot;</span>, <span class="keyword">new</span> AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;jta-transaction-manager&quot;</span>, <span class="keyword">new</span> JtaTransactionManagerBeanDefinitionParser());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象</p>
+<p>advice标签顾名思义就是利用aop的方式来定义具体的切面逻辑<br>annotation-driven标签则确定了注解驱动的逻辑<br>jta-transaction-manager标签还没研究</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://fanyuwen.github.io/2021/04/20/spring/" data-id="ckomu9oae000bm0w3b7q9ame2" data-title="spring" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-spring/" rel="tag">java spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/04/22/database/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          database
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/04/20/lock/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">lock</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-lock/" rel="tag">java lock</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-mybatis/" rel="tag">java mybatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-spring/" rel="tag">java spring</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/database/" style="font-size: 10px;">database</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-lock/" style="font-size: 10px;">java lock</a> <a href="/tags/java-mybatis/" style="font-size: 10px;">java mybatis</a> <a href="/tags/java-spring/" style="font-size: 10px;">java spring</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/05/12/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/mybatis/">mybatis</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/22/database/">database</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/spring/">spring</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/lock/">lock</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 樊宇雯<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
