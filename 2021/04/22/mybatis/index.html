@@ -6,13 +6,15 @@
   
   <title>mybatis | talk is cheap,show me the code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="article">
+  <meta name="description" content="1.项目配置初始化我们使用mybatis的方式一般不是自己直接定义sqlSessionFactory,而是结合Spring去进行依赖管理,所以需要依赖mybatis-spring需要在spring上下文中配置sqlSessionFactoryBean(org.mybatis.spring.SqlSessionFactoryBean) 1234567891011121314151617181920p">
+<meta property="og:type" content="article">
 <meta property="og:title" content="mybatis">
 <meta property="og:url" content="https://fanyuwen.github.io/2021/04/22/mybatis/index.html">
 <meta property="og:site_name" content="talk is cheap,show me the code">
+<meta property="og:description" content="1.项目配置初始化我们使用mybatis的方式一般不是自己直接定义sqlSessionFactory,而是结合Spring去进行依赖管理,所以需要依赖mybatis-spring需要在spring上下文中配置sqlSessionFactoryBean(org.mybatis.spring.SqlSessionFactoryBean) 1234567891011121314151617181920p">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-22T06:03:15.000Z">
-<meta property="article:modified_time" content="2021-05-12T04:09:36.002Z">
+<meta property="article:modified_time" content="2021-05-14T02:35:49.657Z">
 <meta property="article:author" content="樊宇雯">
 <meta property="article:tag" content="java mybatis">
 <meta name="twitter:card" content="summary">
@@ -98,11 +100,18 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+        <h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>1.项目配置初始化<br>我们使用mybatis的方式一般不是自己直接定义sqlSessionFactory,而是结合Spring去进行依赖管理,所以需要依赖mybatis-spring<br>需要在spring上下文中配置sqlSessionFactoryBean(<code>org.mybatis.spring.SqlSessionFactoryBean</code>)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SqlSessionFactoryBean</span> <span class="keyword">implements</span> <span class="title">FactoryBean</span>&lt;<span class="title">SqlSessionFactory</span>&gt;, <span class="title">InitializingBean</span>, <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Resource configLocation;</span><br><span class="line">  <span class="keyword">private</span> Resource[] mapperLocations;</span><br><span class="line">  <span class="keyword">private</span> DataSource dataSource;</span><br><span class="line">  <span class="keyword">private</span> TransactionFactory transactionFactory;</span><br><span class="line">  <span class="keyword">private</span> Properties configurationProperties;</span><br><span class="line">  <span class="keyword">private</span> SqlSessionFactoryBuilder sqlSessionFactoryBuilder = <span class="keyword">new</span> SqlSessionFactoryBuilder();</span><br><span class="line">  <span class="keyword">private</span> SqlSessionFactory sqlSessionFactory;</span><br><span class="line">  <span class="keyword">private</span> String environment = SqlSessionFactoryBean.class.getSimpleName();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> failFast;</span><br><span class="line">  <span class="keyword">private</span> Interceptor[] plugins;</span><br><span class="line">  <span class="keyword">private</span> TypeHandler&lt;?&gt;[] typeHandlers;</span><br><span class="line">  <span class="keyword">private</span> String typeHandlersPackage;</span><br><span class="line">  <span class="keyword">private</span> Class&lt;?&gt;[] typeAliases;</span><br><span class="line">  <span class="keyword">private</span> String typeAliasesPackage;</span><br><span class="line">  <span class="keyword">private</span> Class&lt;?&gt; typeAliasesSuperType;</span><br><span class="line">  <span class="keyword">private</span> DatabaseIdProvider databaseIdProvider;</span><br><span class="line">  <span class="keyword">private</span> ObjectFactory objectFactory;</span><br><span class="line">  <span class="keyword">private</span> ObjectWrapperFactory objectWrapperFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为实现了Spring的声明周期接口InitializingBean(<code>org.springframework.beans.factory.InitializingBean</code>)<br>实现了afterPropertiesSet()方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    notNull(dataSource, <span class="string">&quot;Property &#x27;dataSource&#x27; is required&quot;</span>);</span><br><span class="line">    notNull(sqlSessionFactoryBuilder, <span class="string">&quot;Property &#x27;sqlSessionFactoryBuilder&#x27; is required&quot;</span>);</span><br><span class="line">    <span class="keyword">this</span>.sqlSessionFactory = buildSqlSessionFactory();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法里除了前期会校验一些必须要的参数,接下来就是调用了自己的buildSqlSessionFactory()方法,该方法会正式处理所有mybatis的配置和初始化工作</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckomue5sx0005gow3bmmtd53j" data-title="mybatis" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckonplxib0005a0w3dvzl4krn" data-title="mybatis" class="article-share-link">Share</a>
       
       
       

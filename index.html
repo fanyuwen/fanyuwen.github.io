@@ -116,7 +116,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/05/12/hello-world/" data-id="ckomue5sw0003gow3eej9b6tf" data-title="Hello World" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/05/12/hello-world/" data-id="ckonplxi20000a0w32ptu28vy" data-title="Hello World" class="article-share-link">Share</a>
       
       
       
@@ -150,11 +150,18 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+        <h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>1.项目配置初始化<br>我们使用mybatis的方式一般不是自己直接定义sqlSessionFactory,而是结合Spring去进行依赖管理,所以需要依赖mybatis-spring<br>需要在spring上下文中配置sqlSessionFactoryBean(<code>org.mybatis.spring.SqlSessionFactoryBean</code>)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SqlSessionFactoryBean</span> <span class="keyword">implements</span> <span class="title">FactoryBean</span>&lt;<span class="title">SqlSessionFactory</span>&gt;, <span class="title">InitializingBean</span>, <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEvent</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Resource configLocation;</span><br><span class="line">  <span class="keyword">private</span> Resource[] mapperLocations;</span><br><span class="line">  <span class="keyword">private</span> DataSource dataSource;</span><br><span class="line">  <span class="keyword">private</span> TransactionFactory transactionFactory;</span><br><span class="line">  <span class="keyword">private</span> Properties configurationProperties;</span><br><span class="line">  <span class="keyword">private</span> SqlSessionFactoryBuilder sqlSessionFactoryBuilder = <span class="keyword">new</span> SqlSessionFactoryBuilder();</span><br><span class="line">  <span class="keyword">private</span> SqlSessionFactory sqlSessionFactory;</span><br><span class="line">  <span class="keyword">private</span> String environment = SqlSessionFactoryBean.class.getSimpleName();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> failFast;</span><br><span class="line">  <span class="keyword">private</span> Interceptor[] plugins;</span><br><span class="line">  <span class="keyword">private</span> TypeHandler&lt;?&gt;[] typeHandlers;</span><br><span class="line">  <span class="keyword">private</span> String typeHandlersPackage;</span><br><span class="line">  <span class="keyword">private</span> Class&lt;?&gt;[] typeAliases;</span><br><span class="line">  <span class="keyword">private</span> String typeAliasesPackage;</span><br><span class="line">  <span class="keyword">private</span> Class&lt;?&gt; typeAliasesSuperType;</span><br><span class="line">  <span class="keyword">private</span> DatabaseIdProvider databaseIdProvider;</span><br><span class="line">  <span class="keyword">private</span> ObjectFactory objectFactory;</span><br><span class="line">  <span class="keyword">private</span> ObjectWrapperFactory objectWrapperFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为实现了Spring的声明周期接口InitializingBean(<code>org.springframework.beans.factory.InitializingBean</code>)<br>实现了afterPropertiesSet()方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    notNull(dataSource, <span class="string">&quot;Property &#x27;dataSource&#x27; is required&quot;</span>);</span><br><span class="line">    notNull(sqlSessionFactoryBuilder, <span class="string">&quot;Property &#x27;sqlSessionFactoryBuilder&#x27; is required&quot;</span>);</span><br><span class="line">    <span class="keyword">this</span>.sqlSessionFactory = buildSqlSessionFactory();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法里除了前期会校验一些必须要的参数,接下来就是调用了自己的buildSqlSessionFactory()方法,该方法会正式处理所有mybatis的配置和初始化工作</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckomue5sx0005gow3bmmtd53j" data-title="mybatis" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/22/mybatis/" data-id="ckonplxib0005a0w3dvzl4krn" data-title="mybatis" class="article-share-link">Share</a>
       
       
       
@@ -194,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/22/database/" data-id="ckomue5sp0000gow33qopcrqv" data-title="database" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/22/database/" data-id="ckonplxi60001a0w32005amnm" data-title="database" class="article-share-link">Share</a>
       
       
       
@@ -241,10 +248,13 @@
 <p>spring.handlders文件内容</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\://www.springframework.org/schema/tx=org.springframework.transaction.config.TxNamespaceHandler</span><br></pre></td></tr></table></figure>
 
-<p>关键就在于上面handlers文件里的内容,Spring会用指定的TxNamespaceHandler类来处理xml里的定义<br>TxNamespaceHandler</p>
+<p>这里举个小例子,spring xml文件配置的根标签是beans,然后它的xmlns链接的就是上面的spring.schemas定义的,可以看到xmlns:tx链接的就是”<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/tx&quot;">http://www.springframework.org/schema/tx&quot;</a> 然后还有具体的schemaLocation具体的引用</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:tx</span>=<span class="string">&quot;http://www.springframework.org/schema/tx&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/tx</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/tx/spring-tx.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:advice</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:annotation-driven</span> <span class="attr">transaction-manager</span>=<span class="string">&quot;transactionManager&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">tx:annotation-driven</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:jta-transaction-manager</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:jta-transaction-manager</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>关键就在于上面handlers文件里的内容,Spring会用指定的TxNamespaceHandler类来处理xml里的定义<br>TxNamespaceHandler,具体的类定义在下方</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TxNamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String TRANSACTION_MANAGER_ATTRIBUTE = <span class="string">&quot;transaction-manager&quot;</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = <span class="string">&quot;transactionManager&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> String <span class="title">getTransactionManagerName</span><span class="params">(Element element)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE)?element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE):DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;advice&quot;</span>, <span class="keyword">new</span> TxAdviceBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;annotation-driven&quot;</span>, <span class="keyword">new</span> AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">		registerBeanDefinitionParser(<span class="string">&quot;jta-transaction-manager&quot;</span>, <span class="keyword">new</span> JtaTransactionManagerBeanDefinitionParser());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象</p>
+<p>关键的init方法里定义了以tx标签前缀为首的标签定义以及对应的标签解析逻辑处理对象,通过看上面的xml文件定义里beans根标签下面定义的三个以tx为前缀的三个标签,在这个init方法里都有与之对应的解析对象</p>
 <p>advice标签顾名思义就是利用aop的方式来定义具体的切面逻辑<br>annotation-driven标签则确定了注解驱动的逻辑<br>jta-transaction-manager标签还没研究</p>
 </li>
 </ol>
@@ -252,7 +262,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/20/spring/" data-id="ckomue5sy0008gow36dpx91w8" data-title="spring" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/20/spring/" data-id="ckonplxih000da0w32b4755xs" data-title="spring" class="article-share-link">Share</a>
       
       
       
@@ -402,7 +412,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/04/20/lock/" data-id="ckomue5sw0004gow36n9w9ps4" data-title="lock" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/04/20/lock/" data-id="ckonplxia0004a0w300x966r5" data-title="lock" class="article-share-link">Share</a>
       
       
       
@@ -457,7 +467,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckomue5st0001gow30w626pjz" data-title="hexo 博客搭建" class="article-share-link">Share</a>
+      <a data-url="https://fanyuwen.github.io/2021/02/24/hexo-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckonplxi70002a0w3frc7b3e5" data-title="hexo 博客搭建" class="article-share-link">Share</a>
       
       
       
